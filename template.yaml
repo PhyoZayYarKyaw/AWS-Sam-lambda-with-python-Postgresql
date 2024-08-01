@@ -1,0 +1,126 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-app
+
+  Sample SAM Template for sam-app
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,DELETE,PUT,OPTIONS'"
+      AllowOrigin: "'*'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+
+Resources:
+  GetEmployee:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/GetEmployee
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DB_HOST: !Ref postgres
+          DB_NAME: !Ref postgres
+          DB_USER: !Ref postgres
+          DB_PASSWORD: !Ref postgres
+      Events:
+        Get:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /employees
+            Method: get
+            Cors:
+                AllowMethods: "'GET'"
+                AllowHeaders: "'Content-Type'"
+                AllowOrigin: "'*'"
+  CreateEmployee:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/CreateEmployee
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DB_HOST: !Ref postgres
+          DB_NAME: !Ref postgres
+          DB_USER: !Ref postgres
+          DB_PASSWORD: !Ref postgres
+      Events:
+        create:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /employees/create
+            Method: post
+  UpdateEmployee:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/UpdateEmployee
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DB_HOST: !Ref postgres
+          DB_NAME: !Ref postgres
+          DB_USER: !Ref postgres
+          DB_PASSWORD: !Ref postgres
+      Events:
+        update:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /employees/update/{id}
+            Method: put
+  EditEmployee:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/GetEmployeebyID
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DB_HOST: !Ref postgres
+          DB_NAME: !Ref postgres
+          DB_USER: !Ref postgres
+          DB_PASSWORD: !Ref postgres
+      Events:
+        update:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /employees/edit/{id}
+            Method: get
+  DeleteEmployee:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/DeleteEmployee
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DB_HOST: !Ref postgres
+          DB_NAME: !Ref postgres
+          DB_USER: !Ref postgres
+          DB_PASSWORD: !Ref postgres
+      Events:
+        delete:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /employees/delete/{id}
+            Method: delete
+
